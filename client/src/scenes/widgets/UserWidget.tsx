@@ -27,21 +27,18 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
 
-  const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const data = await response.json();
-    setUser(data);
-  };
-
   useEffect(() => {
-    getUser();
-  }, []);
+    const getUser = async () => {
+      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  // eslint-disbale-line react-hooks/exhaustive-deps
+      const data = await response.json();
+      setUser(data);
+    };
+    getUser();
+  }, [userId, token]);
 
   if (!user) return null;
 
@@ -58,11 +55,7 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
-      <FlexBetween
-        gap="0.5rem"
-        paddingBottom="1.1rem"
-        onClick={() => navigate(`/profile/${userId}`)}
-      >
+      <FlexBetween gap="0.5rem" paddingBottom="1.1rem">
         <FlexBetween gap="1rem">
           <UserImage image={picturePath} />
           <Box>
@@ -70,6 +63,7 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
               variant="h4"
               color={dark}
               fontWeight="500"
+              onClick={() => navigate(`/profile/${userId}`)}
               sx={{
                 '&:hover': {
                   color: palette.primary.light,
@@ -79,12 +73,20 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={medium}>{friends.length}</Typography>
+            <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined
+          sx={{
+            '&:hover': {
+              color: palette.primary.light,
+              cursor: 'pointer',
+            },
+          }}
+          onClick={() => navigate(`/profile/${userId}`)}
+        />
       </FlexBetween>
+
       <Divider />
 
       {/* SECOND ROW */}
@@ -113,6 +115,8 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
         </Box>
       </Box>
 
+      <Divider />
+
       {/* THIRD ROW */}
       <Box padding="1rem 0">
         <FlexBetween marginBottom="0.5rem">
@@ -128,6 +132,8 @@ const UserWidget: React.FC<Props> = ({ userId, picturePath }) => {
           </Typography>
         </FlexBetween>
       </Box>
+
+      <Divider />
 
       {/* FOURTH ROW */}
 

@@ -23,9 +23,14 @@ export const getUserFriends = async (req, res) => {
     );
 
     const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, occupation, location, picturePath }) => (
-        _id, firstName, lastName, occupation, location, picturePath
-      )
+      ({ _id, firstName, lastName, occupation, location, picturePath }) => ({
+        _id,
+        firstName,
+        lastName,
+        occupation,
+        location,
+        picturePath,
+      })
     );
     res.status(200).json(formattedFriends);
   } catch (error) {
@@ -39,6 +44,11 @@ export const addRemoveFriend = async (req, res) => {
     const { id, friendId } = req.params;
     const user = await User.findById(id);
     const friend = await User.findById(friendId);
+
+    if (id === friendId)
+      return res
+        .status(400)
+        .json({ message: 'You could not add/remove friend by your self' });
 
     if (user.friends.includes(friendId)) {
       user.friends = user.friends.filter((id) => id !== friendId);
@@ -56,9 +66,14 @@ export const addRemoveFriend = async (req, res) => {
     );
 
     const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, occupation, location, picturePath }) => (
-        _id, firstName, lastName, occupation, location, picturePath
-      )
+      ({ _id, firstName, lastName, occupation, location, picturePath }) => ({
+        _id,
+        firstName,
+        lastName,
+        occupation,
+        location,
+        picturePath,
+      })
     );
 
     res.status(200).json(formattedFriends);

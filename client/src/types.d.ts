@@ -26,6 +26,9 @@ export interface Post {
   location: string;
   createdAt: Date;
   updatedAt: Date;
+  comments: string[];
   __v: 0;
-  likes: Object;
+  likes: {
+    [key: string]: boolean;
+  };
 }
